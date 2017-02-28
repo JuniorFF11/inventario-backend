@@ -55,14 +55,27 @@ class Database {
   buscarUsuario (usuario) {
     let proceso = co.wrap(function* () {
       try {
-        let usuarioEncontrado = yield models.Usuario.findAll({where: usuario})
-
+        let usuarioEncontrado = yield models.Usuario.findAll({where: usuario, include: [{model: models.TipoUsuario}]})
+        if (!usuarioEncontrado) throw new Error('Usuario no encontrado')
         return Promise.resolve(usuarioEncontrado)
       } catch (e) {
-        return Promise.reject({error: 'No se ha podido encontrar este usuario'})
+        return Promise.reject({error: e.toString()})
       }
     })
 
+    return Promise.resolve(proceso())
+  }
+
+  deshabilitarUsuario (usuario) {
+    let proceso = co.wrap(function* () {
+      try {
+        let encontrado = yield models.Usuario.find({where: usuario})
+        yield encontrado.update({estado: 'E'})
+        return Promise.resolve(encontrado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
     return Promise.resolve(proceso())
   }
 }

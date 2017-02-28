@@ -57,7 +57,6 @@ test('Buscar usuario', async t => {
   await db.guardarTipoUsuario(administrador)
   let usuarioGuardado = await db.crearUsuario(usuario)
   let usuarioEncontrado = await db.buscarUsuario({usuarioId: usuarioGuardado.usuarioId})
-
   t.true(usuarioEncontrado.length > 0)
   usuarioEncontrado = usuarioEncontrado[0]
   t.deepEqual(usuarioEncontrado.usuarioId, usuarioGuardado.usuarioId)
@@ -65,4 +64,27 @@ test('Buscar usuario', async t => {
   t.deepEqual(usuarioEncontrado.apellido, usuarioGuardado.apellido)
   t.deepEqual(usuarioEncontrado.usuario, usuarioGuardado.usuario)
   t.deepEqual(usuarioEncontrado.contrasena, usuarioGuardado.contrasena)
+})
+
+test('deshabilitar/borrar usuario', async t => {
+  const db = new Database()
+
+  t.is(typeof db.deshabilitarUsuario, 'function', 'Deberia ser una funcion')
+
+  let tiposUsuario = fixtures.getTiposUsuario()
+  let administrador = tiposUsuario.administrador
+  let usuario = fixtures.getUsuario()
+
+  usuario.tipoUsuarioId = administrador.tipoUsuarioId
+
+  await db.guardarTipoUsuario(administrador)
+  let usuarioGuardado = await db.crearUsuario(usuario)
+  let resultado = await db.deshabilitarUsuario({usuarioId: usuarioGuardado.usuarioId})
+
+  t.deepEqual(resultado.usuarioId, usuarioGuardado.usuarioId)
+  t.deepEqual(resultado.nombre, usuarioGuardado.nombre)
+  t.deepEqual(resultado.apellido, usuarioGuardado.apellido)
+  t.deepEqual(resultado.usuario, usuarioGuardado.usuario)
+  t.deepEqual(resultado.contrasena, usuarioGuardado.contrasena)
+  t.deepEqual(resultado.estado, 'E')
 })
