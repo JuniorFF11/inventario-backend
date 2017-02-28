@@ -57,8 +57,6 @@ test('Buscar usuario', async t => {
   await db.guardarTipoUsuario(administrador)
   let usuarioGuardado = await db.crearUsuario(usuario)
   let usuarioEncontrado = await db.buscarUsuario({usuarioId: usuarioGuardado.usuarioId})
-  t.true(usuarioEncontrado.length > 0)
-  usuarioEncontrado = usuarioEncontrado[0]
   t.deepEqual(usuarioEncontrado.usuarioId, usuarioGuardado.usuarioId)
   t.deepEqual(usuarioEncontrado.nombre, usuarioGuardado.nombre)
   t.deepEqual(usuarioEncontrado.apellido, usuarioGuardado.apellido)
@@ -112,4 +110,31 @@ test('Modificar usuario', async t => {
   t.deepEqual(usuarioModificado.contrasena, resultado.contrasena)
   t.deepEqual(usuarioModificado.tipoUsuarioId, resultado.tipoUsuarioId)
   t.deepEqual(usuarioModificado.apellido, resultado.apellido)
+})
+
+test('Crear Proveedor', async t => {
+  const db = new Database()
+  t.is(typeof db.crearProveedor, 'function', 'Deberia ser una funcion')
+
+  let proveedor = fixtures.getProveedor()
+  let proveedorGuardado = await db.crearProveedor(proveedor)
+
+  t.deepEqual(proveedor.proveedorId, proveedorGuardado.proveedorId)
+  t.deepEqual(proveedor.contacto, proveedorGuardado.contacto)
+  t.deepEqual(proveedor.telefono, proveedorGuardado.telefono)
+  t.deepEqual(proveedor.nombre, proveedorGuardado.nombre)
+})
+
+test('Buscar Proveedor', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarProveedor, 'function', 'Deberia ser una funcion.')
+
+  let proveedor = fixtures.getProveedor()
+  let proveedorGuardado = await db.crearProveedor(proveedor)
+  let proveedorEncontrado = await db.buscarProveedor({proveedorId: proveedorGuardado.proveedorId})
+
+  t.deepEqual(proveedorEncontrado.proveedorId, proveedorGuardado.proveedorId)
+  t.deepEqual(proveedorEncontrado.contacto, proveedorGuardado.contacto)
+  t.deepEqual(proveedorEncontrado.telefono, proveedorGuardado.telefono)
+  t.deepEqual(proveedorEncontrado.nombre, proveedorGuardado.nombre)
 })

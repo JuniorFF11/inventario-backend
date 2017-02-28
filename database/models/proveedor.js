@@ -8,6 +8,7 @@ module.exports = function (sequelize, DataTypes) {
     nombre: {type: DataTypes.STRING, allowNull: false, unique: true},
     telefono: {type: DataTypes.STRING(10)},
     direccion: {type: DataTypes.TEXT},
-    contacto: {type: DataTypes.STRING}
+    contacto: {type: DataTypes.STRING},
+    estado: {type: DataTypes.ENUM('A', 'E'), allowNull: false, defaultValue: 'A'}
   })
 }

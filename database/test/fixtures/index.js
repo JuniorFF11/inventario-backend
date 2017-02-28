@@ -11,6 +11,16 @@ function getUsuario () {
   }
 }
 
+function getProveedor () {
+  return {
+    proveedorId: uuid.v4(),
+    nombre: `proveedor-${uuid.v4()}`,
+    telefono: uuid.v4().substring(0, 9),
+    direccion: `Direccion-${uuid.v4()}`,
+    contacto: `Contacto-${uuid.v4()}`
+  }
+}
+
 function getTiposUsuario () {
   return {
     administrador: {
@@ -23,5 +33,6 @@ function getTiposUsuario () {
 
 module.exports = {
   getUsuario,
-  getTiposUsuario
+  getTiposUsuario,
+  getProveedor
 }

@@ -54,8 +54,9 @@ class Database {
 
   buscarUsuario (usuario) {
     let proceso = co.wrap(function* () {
+      usuario = usuario || {}
       try {
-        let usuarioEncontrado = yield models.Usuario.findAll({where: usuario, include: [{model: models.TipoUsuario}]})
+        let usuarioEncontrado = yield models.Usuario.find({where: usuario, include: [{model: models.TipoUsuario}]})
         if (!usuarioEncontrado) throw new Error('Usuario no encontrado')
         return Promise.resolve(usuarioEncontrado)
       } catch (e) {
@@ -83,6 +84,7 @@ class Database {
     let proceso = co.wrap(function* () {
       try {
         let usuario = yield models.Usuario.find({where: usuarioViejo})
+        if (!usuario) throw new Error('Usuario no encontrado')
         let nuevo = JSON.parse(JSON.stringify(usuarioNuevo))
         delete nuevo.usuarioId
         yield usuario.update(nuevo)
@@ -92,6 +94,33 @@ class Database {
       }
     })
 
+    return Promise.resolve(proceso())
+  }
+
+  crearProveedor (proveedor) {
+    let proceso = co.wrap(function* () {
+      try {
+        let proveedorGuardado = yield models.Proveedor.create(proveedor)
+        if (!proveedorGuardado) throw new Error('El proveedor no ha podido ser guardado.')
+        return Promise.resolve(proveedorGuardado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  buscarProveedor (proveedor) {
+    proveedor = proveedor || {}
+    let proceso = co.wrap(function* () {
+      try {
+        let encontrado = models.Proveedor.find({where: proveedor})
+        if (!encontrado) throw new Error('El proveedor no fue encontrado.')
+        return Promise.resolve(encontrado)
+      } catch (e) {
+        Promise.reject(e.toString())
+      }
+    })
     return Promise.resolve(proceso())
   }
 }
