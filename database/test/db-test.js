@@ -88,3 +88,28 @@ test('deshabilitar/borrar usuario', async t => {
   t.deepEqual(resultado.contrasena, usuarioGuardado.contrasena)
   t.deepEqual(resultado.estado, 'E')
 })
+
+test('Modificar usuario', async t => {
+  const db = new Database()
+
+  t.is(typeof db.modificarUsuario, 'function', 'Deberia ser una funcion')
+
+  let tiposUsuario = fixtures.getTiposUsuario()
+  let administrador = tiposUsuario.administrador
+  let usuario = fixtures.getUsuario()
+
+  usuario.tipoUsuarioId = administrador.tipoUsuarioId
+
+  await db.guardarTipoUsuario(administrador)
+  let usuarioGuardado = await db.crearUsuario(usuario)
+  let usuarioModificado = JSON.parse(JSON.stringify(usuarioGuardado))
+  usuarioModificado.usuario = 'Foo'
+  let resultado = await db.modificarUsuario({usuarioId: usuarioGuardado.usuarioId}, {usuario: 'Foo'})
+
+  t.deepEqual(usuarioModificado.usuarioId, resultado.usuarioId)
+  t.deepEqual(usuarioModificado.usuario, resultado.usuario)
+  t.deepEqual(usuarioModificado.nombre, resultado.nombre)
+  t.deepEqual(usuarioModificado.contrasena, resultado.contrasena)
+  t.deepEqual(usuarioModificado.tipoUsuarioId, resultado.tipoUsuarioId)
+  t.deepEqual(usuarioModificado.apellido, resultado.apellido)
+})

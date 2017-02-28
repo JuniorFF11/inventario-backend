@@ -78,6 +78,22 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  modificarUsuario (usuarioViejo, usuarioNuevo) {
+    let proceso = co.wrap(function* () {
+      try {
+        let usuario = yield models.Usuario.find({where: usuarioViejo})
+        let nuevo = JSON.parse(JSON.stringify(usuarioNuevo))
+        delete nuevo.usuarioId
+        yield usuario.update(nuevo)
+        return Promise.resolve(usuario)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database
