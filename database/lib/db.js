@@ -39,6 +39,32 @@ class Database {
 
     return Promise.resolve(tarea())
   }
+
+  crearUsuario (usuario) {
+    let proceso = co.wrap(function* () {
+      try {
+        let usuarioGuardado = yield models.Usuario.create(usuario)
+        return Promise.resolve(usuarioGuardado)
+      } catch (e) {
+        return Promise.reject({error: 'El usuario no ha podido ser creado'})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  buscarUsuario (usuario) {
+    let proceso = co.wrap(function* () {
+      try {
+        let usuarioEncontrado = yield models.Usuario.findAll({where: usuario})
+
+        return Promise.resolve(usuarioEncontrado)
+      } catch (e) {
+        return Promise.reject({error: 'No se ha podido encontrar este usuario'})
+      }
+    })
+
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database

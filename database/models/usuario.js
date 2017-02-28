@@ -5,6 +5,7 @@ module.exports = function (sequelize, DataTypes) {
     nombre: DataTypes.STRING,
     apellido: DataTypes.STRING,
     usuario: {type: DataTypes.STRING, unique: true},
-    contrasena: DataTypes.STRING
+    contrasena: {type: DataTypes.STRING, allowNull: false},
+    estado: {type: DataTypes.ENUM('A', 'E'), allowNull: false, defaultValue: 'A'}
   })
 }
