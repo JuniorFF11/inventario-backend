@@ -68,6 +68,7 @@ class Database {
   }
 
   deshabilitarUsuario (usuario) {
+    if (!usuario || usuario === {}) throw new Error('Necesita un usuario para desahabilitar')
     let proceso = co.wrap(function* () {
       try {
         let encontrado = yield models.Usuario.find({where: usuario})
@@ -119,6 +120,22 @@ class Database {
         return Promise.resolve(encontrado)
       } catch (e) {
         Promise.reject(e.toString())
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  deshabilitarProveedor (proveedor) {
+    if (!proveedor || proveedor === {}) throw new Error('Debe definir proveedor a desahabilitar')
+    const buscarProveedor = this.buscarProveedor
+    let proceso = co.wrap(function* () {
+      try {
+        let resultado = yield buscarProveedor(proveedor)
+        if (!resultado) throw new Error('El proveedor no fue encontrado.')
+        resultado.update({estado: 'E'})
+        return Promise.resolve(resultado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
       }
     })
     return Promise.resolve(proceso())
