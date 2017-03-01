@@ -65,6 +65,25 @@ test('Buscar usuario', async t => {
   t.deepEqual(usuarioEncontrado.contrasena, usuarioGuardado.contrasena)
 })
 
+test('buscar usuarios', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarUsuarios, 'function', 'Deberia ser una funcion')
+
+  let usuarios = fixtures.getUsuarios()
+  let administrador = fixtures.getTiposUsuario().administrador
+  await db.guardarTipoUsuario(administrador)
+  await usuarios.map(usuario => {
+    usuario.tipoUsuarioId = administrador.tipoUsuarioId
+    db.crearUsuario(usuario)
+  })
+
+  let resultado = await db.buscarUsuarios()
+  t.true(resultado.length > 0)
+
+  resultado = await db.buscarUsuarios({usuarioId: uuid.v4()})
+  t.true(resultado.length <= 0)
+})
+
 test('deshabilitar/borrar usuario', async t => {
   const db = new Database()
 
@@ -185,4 +204,73 @@ test('buscar Proveedores', async t => {
   t.true(resultado[1].nombre !== undefined)
   resultado = await db.buscarProveedores({nombre: uuid.v4()})
   t.true(resultado.length <= 0)
+})
+
+test('Crear Almacen', async t => {
+  const db = new Database()
+  t.is(typeof db.crearAlmacen, 'function', 'Deberia ser una funcion')
+
+  let almacen = fixtures.getAlmacen()
+  let almacenGuardado = await db.crearAlmacen(almacen)
+
+  t.deepEqual(almacen.almacenId, almacenGuardado.almacenId)
+  t.deepEqual(almacen.descripcion, almacenGuardado.descripcion)
+  t.deepEqual('A', almacenGuardado.estado)
+})
+
+test('Buscar Almacen', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarAlmacen, 'function', 'Deberia ser una funcion.')
+
+  let almacen = fixtures.getAlmacen()
+  await db.crearAlmacen(almacen)
+  let almacenEncontrado = await db.buscarAlmacen(almacen)
+
+  t.deepEqual(almacen.almacenId, almacenEncontrado.almacenId)
+  t.deepEqual(almacen.descripcion, almacenEncontrado.descripcion)
+  t.deepEqual(almacenEncontrado.estado, 'A')
+})
+
+test('Deshabilitar Alamacen', async t => {
+  const db = new Database()
+  t.is(typeof db.deshabilitarAlmacen, 'function', 'Deberia ser una funcion')
+
+  let almacen = fixtures.getAlmacen()
+  await db.crearAlmacen(almacen)
+
+  let almacenDeshabilitado = await db.deshabilitarAlmacen(almacen)
+
+  t.deepEqual(almacen.almacenId, almacenDeshabilitado.almacenId)
+  t.deepEqual(almacen.descripcion, almacenDeshabilitado.descripcion)
+  t.deepEqual(almacenDeshabilitado.estado, 'E')
+})
+
+test('Modificar Almacen', async t => {
+  const db = new Database()
+  t.is(typeof db.modificarAlmacen, 'function', 'Deberia ser una funcion')
+
+  let almacen = fixtures.getAlmacen()
+  await db.crearAlmacen(almacen)
+
+  let almacenModificado = await db.modificarAlmacen(almacen, {nombre: 'Foo'})
+
+  t.deepEqual(almacen.almacenId, almacenModificado.almacenId)
+  t.deepEqual(almacen.descripcion, almacenModificado.descripcion)
+})
+
+test('Buscar almacenes', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarAlmacenes, 'function', 'Deberia ser una funcion')
+
+  let almacenes = fixtures.getAlmacenes()
+
+  await almacenes.map(almacen => {
+    db.crearAlmacen(almacen)
+  })
+
+  let almacenesEncontrados = await db.buscarAlmacenes()
+  t.true(almacenesEncontrados.length > 0)
+
+  almacenesEncontrados = await db.buscarAlmacenes({almacenId: uuid.v4()})
+  t.true(almacenesEncontrados.length <= 0)
 })

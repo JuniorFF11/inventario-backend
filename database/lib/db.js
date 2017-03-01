@@ -56,10 +56,26 @@ class Database {
     let proceso = co.wrap(function* () {
       usuario = usuario || {}
       try {
-        let usuarioEncontrado = yield models.Usuario.find({where: usuario, include: [{model: models.TipoUsuario}]})
+        let usuarioEncontrado = yield models.Usuario.findOne({where: usuario, include: [{model: models.TipoUsuario}]})
         if (!usuarioEncontrado) throw new Error('Usuario no encontrado')
         delete usuarioEncontrado.contrasena
         return Promise.resolve(usuarioEncontrado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+
+    return Promise.resolve(proceso())
+  }
+
+  buscarUsuarios (condicion) {
+    condicion = condicion || {}
+
+    let proceso = co.wrap(function* () {
+      try {
+        let usuarios = yield models.Usuario.findAll({where: condicion, include: [{model: models.TipoUsuario}]})
+        if (!usuarios) throw new Error('No se encontraron usuarios')
+        return Promise.resolve(usuarios)
       } catch (e) {
         return Promise.reject({error: e.toString()})
       }
@@ -113,10 +129,10 @@ class Database {
   }
 
   buscarProveedor (proveedor) {
-    proveedor = proveedor || {}
+    if (!proveedor) throw new Error('debe Especificar algun dato del proveedor')
     let proceso = co.wrap(function* () {
       try {
-        let encontrado = models.Proveedor.find({where: proveedor})
+        let encontrado = models.Proveedor.findOne({where: proveedor})
         if (!encontrado) throw new Error('El proveedor no fue encontrado.')
         return Promise.resolve(encontrado)
       } catch (e) {
@@ -164,6 +180,80 @@ class Database {
         let proveedores = yield models.Proveedor.findAll({where: condicion})
         if (!proveedores) throw new Error('No se encontraron proveedores.')
         return Promise.resolve(proveedores)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  crearAlmacen (almacen) {
+    if (!almacen) throw new Error('Se necesita un almacen para ser guardado.')
+    let proceso = co.wrap(function* () {
+      try {
+        let almacenGuardado = yield models.Almacen.create(almacen)
+        if (!almacenGuardado) throw new Error('El almacen no ha podido ser guardado.')
+        return Promise.resolve(almacenGuardado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  buscarAlmacen (almacen) {
+    if (!almacen) throw new Error('Debe especificar el almacen')
+    let proceso = co.wrap(function* () {
+      try {
+        let encontrado = models.Almacen.findOne({where: almacen})
+        if (!encontrado) throw new Error('El Almacen no fue encontrado.')
+        return Promise.resolve(encontrado)
+      } catch (e) {
+        Promise.reject(e.toString())
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  deshabilitarAlmacen (almacen) {
+    if (!almacen || almacen === {}) throw new Error('Debe definir almacen a desahabilitar')
+    const buscarAlmacen = this.buscarAlmacen
+    let proceso = co.wrap(function* () {
+      try {
+        let resultado = yield buscarAlmacen(almacen)
+        if (!resultado) throw new Error('El almacen no fue encontrado.')
+        resultado.update({estado: 'E'})
+        return Promise.resolve(resultado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  modificarAlmacen (almacenViejo, almacenNuevo) {
+    let buscarAlmacen = this.buscarAlmacen
+    let proceso = co.wrap(function* () {
+      try {
+        if (!almacenViejo || !almacenNuevo) throw new Error('No se ha podido modificar el almacen, datos incompletos.')
+        let almacen = yield buscarAlmacen(almacenViejo)
+        if (!almacen) throw new Error('No se ha encontrado este almacen.')
+        yield almacen.update(almacenNuevo)
+        return Promise.resolve(almacen)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  buscarAlmacenes (condicion) {
+    condicion = condicion || {}
+    let proceso = co.wrap(function* () {
+      try {
+        let almacenes = yield models.Almacen.findAll({where: condicion})
+        if (!almacenes) throw new Error('No se encontraron almacenes')
+        return Promise.resolve(almacenes)
       } catch (e) {
         return Promise.reject({error: e.toString()})
       }
