@@ -16,7 +16,9 @@ Usuario.belongsTo(TipoUsuario, {foreignKey: {name: 'tipoUsuarioId', allowNull: f
 Log.belongsTo(TipoMovimiento, {foreignKey: {name: 'tipoMovimientoId', allowNull: false}})
 Log.belongsTo(Usuario, {foreignKey: {name: 'usuarioId', allowNull: false}})
 Almacen.hasMany(Articulo, {foreignKey: {name: 'almacenId', allowNull: false}})
+Articulo.belongsTo(Almacen, {foreignKey: {name: 'almacenId', allowNull: false}})
 Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}})
+Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
 Articulo.hasOne(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
 
 module.exports = {

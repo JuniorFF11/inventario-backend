@@ -260,6 +260,41 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  guardarArticulo (articulo) {
+    let proceso = co.wrap(function* () {
+      try {
+        let guardado = yield models.Articulo.create(articulo)
+        if (!guardado) throw new Error('El articulo no pudo ser guardado.')
+        return Promise.resolve(guardado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+  buscarArticulo (articulo) {
+    let proceso = co.wrap(function* () {
+      try {
+        let articuloEncontrado = yield models.Articulo
+        .findOne({
+          where: articulo,
+          include: [
+            {
+              model: models.Proveedor
+            },
+            {
+              model: models.Almacen
+            }
+          ]})
+        if (!articuloEncontrado) throw new Error('El articulo no ha sido encontrado.')
+        return Promise.resolve(articuloEncontrado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database

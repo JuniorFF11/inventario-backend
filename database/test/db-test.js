@@ -274,3 +274,47 @@ test('Buscar almacenes', async t => {
   almacenesEncontrados = await db.buscarAlmacenes({almacenId: uuid.v4()})
   t.true(almacenesEncontrados.length <= 0)
 })
+
+test('Guardar Articulo', async t => {
+  const db = new Database()
+  t.is(typeof db.guardarArticulo, 'function', 'Deberia ser una funcion.')
+
+  let articulo = fixtures.getArticulo()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  articulo.proveedorId = proveedor.proveedorId
+  articulo.almacenId = almacen.almacenId
+
+  await db.crearProveedor(proveedor)
+  await db.crearAlmacen(almacen)
+
+  let resultado = await db.guardarArticulo(articulo)
+
+  t.deepEqual(articulo.articuloId, resultado.articuloId)
+  t.deepEqual(articulo.proveedorId, resultado.proveedorId)
+  t.deepEqual(articulo.almacenId, resultado.almacenId)
+  t.deepEqual(articulo.descripcion, resultado.descripcion)
+})
+
+test('Buscar articulo', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarArticulo, 'function', 'Deberia ser una funcion')
+  let articulo = fixtures.getArticulo()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  articulo.proveedorId = proveedor.proveedorId
+  articulo.almacenId = almacen.almacenId
+
+  await db.crearProveedor(proveedor)
+  await db.crearAlmacen(almacen)
+  await db.guardarArticulo(articulo)
+
+  let encontrado = await db.buscarArticulo({articuloId: articulo.articuloId})
+
+  t.deepEqual(articulo.articuloId, encontrado.articuloId)
+  t.deepEqual(articulo.proveedorId, encontrado.proveedorId)
+  t.deepEqual(articulo.almacenId, encontrado.almacenId)
+  t.deepEqual(articulo.descripcion, encontrado.descripcion)
+})
