@@ -154,3 +154,19 @@ test('Deshabilitar Proveedor', async t => {
   t.deepEqual(proveedorDeshabilitado.nombre, proveedor.nombre)
   t.deepEqual(proveedorDeshabilitado.estado, 'E')
 })
+
+test('Modificar Proveedor', async t => {
+  const db = new Database()
+  t.is(typeof db.modificarProveedor, 'function', 'Deberia ser una funcion')
+
+  let proveedor = fixtures.getProveedor()
+  await db.crearProveedor(proveedor)
+
+  let proveedorModificado = await db.modificarProveedor(proveedor, {nombre: 'Foo', contacto: 'bar'})
+
+  t.deepEqual(proveedorModificado.proveedorId, proveedor.proveedorId)
+  t.deepEqual(proveedorModificado.contacto, 'bar')
+  t.deepEqual(proveedorModificado.telefono, proveedor.telefono)
+  t.deepEqual(proveedorModificado.nombre, 'Foo')
+  t.deepEqual(proveedorModificado.estado, 'A')
+})

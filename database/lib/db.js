@@ -58,6 +58,7 @@ class Database {
       try {
         let usuarioEncontrado = yield models.Usuario.find({where: usuario, include: [{model: models.TipoUsuario}]})
         if (!usuarioEncontrado) throw new Error('Usuario no encontrado')
+        delete usuarioEncontrado.contrasena
         return Promise.resolve(usuarioEncontrado)
       } catch (e) {
         return Promise.reject({error: e.toString()})
@@ -133,6 +134,21 @@ class Database {
         let resultado = yield buscarProveedor(proveedor)
         if (!resultado) throw new Error('El proveedor no fue encontrado.')
         resultado.update({estado: 'E'})
+        return Promise.resolve(resultado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+  modificarProveedor (proveedorViejo, proveedorNuevo) {
+    if (!proveedorViejo || proveedorViejo === {}) throw new Error('Debe definir proveedor a desahabilitar')
+    const buscarProveedor = this.buscarProveedor
+    let proceso = co.wrap(function* () {
+      try {
+        let resultado = yield buscarProveedor(proveedorViejo)
+        if (!resultado) throw new Error('El proveedor no fue encontrado.')
+        resultado.update(proveedorNuevo)
         return Promise.resolve(resultado)
       } catch (e) {
         return Promise.reject({error: e.toString()})
