@@ -1,6 +1,7 @@
 const test = require('ava')
 const Database = require('../')
 const fixtures = require('./fixtures')
+const uuid = require('uuid')
 
 test.before(async t => {
   const db = new Database()
@@ -169,4 +170,19 @@ test('Modificar Proveedor', async t => {
   t.deepEqual(proveedorModificado.telefono, proveedor.telefono)
   t.deepEqual(proveedorModificado.nombre, 'Foo')
   t.deepEqual(proveedorModificado.estado, 'A')
+})
+
+test('buscar Proveedores', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarProveedores, 'function', 'Deberia ser una funcion')
+
+  let proveedores = fixtures.getProveedores()
+  await proveedores.map(proveedor => db.crearProveedor(proveedor))
+
+  let resultado = await db.buscarProveedores()
+
+  t.true(resultado.length > 0)
+  t.true(resultado[1].nombre !== undefined)
+  resultado = await db.buscarProveedores({nombre: uuid.v4()})
+  t.true(resultado.length <= 0)
 })

@@ -21,6 +21,16 @@ function getProveedor () {
   }
 }
 
+function getProveedores () {
+  return [
+    getProveedor(),
+    getProveedor(),
+    getProveedor(),
+    getProveedor(),
+    getProveedor()
+  ]
+}
+
 function getTiposUsuario () {
   return {
     administrador: {
@@ -34,5 +44,6 @@ function getTiposUsuario () {
 module.exports = {
   getUsuario,
   getTiposUsuario,
-  getProveedor
+  getProveedor,
+  getProveedores
 }

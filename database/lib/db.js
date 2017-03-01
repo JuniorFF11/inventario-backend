@@ -156,6 +156,20 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  buscarProveedores (condicion) {
+    condicion = condicion || {}
+    let proceso = co.wrap(function* () {
+      try {
+        let proveedores = yield models.Proveedor.findAll({where: condicion})
+        if (!proveedores) throw new Error('No se encontraron proveedores.')
+        return Promise.resolve(proveedores)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database
