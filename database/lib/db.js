@@ -295,6 +295,20 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  buscarArticulos (condicion) {
+    condicion = condicion || {}
+    let proceso = co.wrap(function* () {
+      try {
+        let articulos = yield models.Articulo.findAll({where: condicion})
+        if (!articulos) throw new Error('No se encontraron articulos.')
+        return Promise.resolve(articulos)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database

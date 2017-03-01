@@ -318,3 +318,24 @@ test('Buscar articulo', async t => {
   t.deepEqual(articulo.almacenId, encontrado.almacenId)
   t.deepEqual(articulo.descripcion, encontrado.descripcion)
 })
+
+test('Buscar Articulos', async t => {
+  const db = new Database()
+  t.is(typeof db.buscarArticulos, 'function', 'Deberia ser una funcion')
+  let articulos = fixtures.getArticulos()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  await db.crearProveedor(proveedor)
+  await db.crearAlmacen(almacen)
+  await articulos.map(articulo => {
+    articulo.proveedorId = proveedor.proveedorId
+    articulo.almacenId = almacen.almacenId
+    db.guardarArticulo(articulo)
+  })
+  let resultado = await db.buscarArticulos()
+  t.true(resultado.length > 0)
+
+  resultado = await db.buscarArticulos({articuloId: uuid.v4()})
+  t.true(resultado.length <= 0)
+})
