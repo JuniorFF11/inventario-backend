@@ -19,7 +19,8 @@ Almacen.hasMany(Articulo, {foreignKey: {name: 'almacenId', allowNull: false}})
 Articulo.belongsTo(Almacen, {foreignKey: {name: 'almacenId', allowNull: false}})
 Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}})
 Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
-Articulo.hasOne(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
+Articulo.hasMany(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
+Inventario.belongsToMany(Articulo, {through: 'inventario`', foreignKey: {name: 'articuloId', allowNull: false}})
 
 module.exports = {
   sequelize,

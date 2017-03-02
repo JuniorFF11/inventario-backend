@@ -309,6 +309,42 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  modificarArticulo (articuloViejo, articuloNuevo) {
+    let buscarArticulo = this.buscarArticulo
+    let proceso = co.wrap(function* () {
+      try {
+        if (!articuloViejo || !articuloNuevo) throw new Error('No se ha podido modificar el articulo')
+        let articulo = yield buscarArticulo(articuloViejo)
+        if (!articulo) throw new Error('El articulo no pudo ser encontrado')
+        yield articulo.update(articuloNuevo)
+        return Promise.resolve(articulo)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  actualizarInventario (articulo, propiedades) {
+    let proceso = co.wrap(function* () {
+      try {
+        let articuloInventario = yield models.Inventario.findOne({where: articulo})
+        if (!articuloInventario) {
+          articulo.costo = propiedades.costo
+          articulo.precio = propiedades.precio
+          articulo.cantidad = propiedades.cantidad
+          articuloInventario = yield models.Inventario.create(articulo)
+          return Promise.resolve(articuloInventario)
+        }
+        yield articuloInventario.update(propiedades)
+        return Promise.resolve(articuloInventario)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database

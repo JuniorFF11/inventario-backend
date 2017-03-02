@@ -339,3 +339,49 @@ test('Buscar Articulos', async t => {
   resultado = await db.buscarArticulos({articuloId: uuid.v4()})
   t.true(resultado.length <= 0)
 })
+
+test('Modificar Articulo', async t => {
+  const db = new Database()
+  t.is(typeof db.modificarArticulo, 'function', 'Deberia ser una funcion')
+
+  let articulo = fixtures.getArticulo()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  articulo.proveedorId = proveedor.proveedorId
+  articulo.almacenId = almacen.almacenId
+
+  await db.crearAlmacen(almacen)
+  await db.crearProveedor(proveedor)
+  await db.guardarArticulo(articulo)
+
+  let articuloModificado = await db.modificarArticulo(articulo, {descripcion: 'Foo'})
+
+  t.deepEqual(articulo.articuloId, articuloModificado.articuloId)
+  t.deepEqual(articulo.proveedorId, articuloModificado.proveedorId)
+  t.deepEqual(articulo.almacenId, articuloModificado.almacenId)
+  t.deepEqual('Foo', articuloModificado.descripcion)
+})
+
+test('Agregar inventario', async t => {
+  const db = new Database()
+  t.is(typeof db.actualizarInventario, 'function', 'Deberia ser una funcion')
+
+  let articulo = fixtures.getArticulo()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  articulo.proveedorId = proveedor.proveedorId
+  articulo.almacenId = almacen.almacenId
+
+  await db.crearProveedor(proveedor)
+  await db.crearAlmacen(almacen)
+  await db.guardarArticulo(articulo)
+
+  let resultado = await db.actualizarInventario({articuloId: articulo.articuloId}, {cantidad: 1, costo: 100, precio: 150})
+
+  t.deepEqual(resultado.articuloId, articulo.articuloId)
+  t.deepEqual(resultado.costo, 100)
+  t.deepEqual(resultado.precio, 150)
+  t.deepEqual(resultado.cantidad, 1)
+})
