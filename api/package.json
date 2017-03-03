@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Api del proyecto Gestion-mercancia",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run lint && ava",
+    "lint": "standard"
+  },
+  "standard": {
+    "ignore": [
+      "./node_modules"
+    ]
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.0",
+    "express": "^4.15.0"
+  },
+  "devDependencies": {
+    "ava": "^0.18.2",
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3",
+    "standard": "^9.0.0",
+    "test-listen": "^1.0.1"
+  }
+}
