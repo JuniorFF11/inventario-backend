@@ -32,15 +32,6 @@ router.put('/modificar', (req, res) => {
   })
 })
 
-router.get('/buscarusuarios', (req, res) => {
-  db.buscarUsuarios(req.query.usuarios || undefined)
-  .then(u => res.status(200).json(u))
-  .catch(error => {
-    console.log(error)
-    res.status(500).json(error)
-  })
-})
-
 router.get('/buscar', (req, res) => {
   db.buscarProveedor(req.query.proveedor)
   .then(u => res.status(200).json(u.get({plain: true})))
