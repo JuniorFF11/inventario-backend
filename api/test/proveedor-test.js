@@ -119,3 +119,31 @@ test('PUT /api/proveedor/modificar', async t => {
   t.is(resultado.body.telefono, 'xxx-xxx-xxxx')
   t.is(resultado.body.direccion, proveedor.direccion)
 })
+
+test('GET /api/proveedor/buscarproveedores', async t => {
+  const url = t.context.url
+  const proveedores = fixtures.getProveedores()
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/proveedor/crear`,
+    body: {},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  for (let proveedor of proveedores) {
+    options.body.proveedor = proveedor
+    await request(options)
+  }
+
+  options = {
+    method: 'GET',
+    uri: `${url}/api/proveedor/buscarproveedores`,
+    json: true,
+    resolveWithFullResponse: true
+  }
+  let respuesta = await request(options)
+
+  t.is(respuesta.statusCode, 200)
+  t.true(respuesta.body.length > 0)
+})
