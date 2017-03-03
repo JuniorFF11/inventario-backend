@@ -33,4 +33,23 @@ router.get('/buscarusuarios', (req, res) => {
   })
 })
 
+router.put('/deshabilitar', (req, res) => {
+  db.deshabilitarUsuario(req.body.usuario)
+  .then(usuario => {
+    res.status(200).json(usuario.get({plain: true}))
+  })
+  .catch(error => {
+    res.status(500).json(error)
+  })
+})
+
+router.put('/modificar', (req, res) => {
+  db.modificarUsuario(req.body.usuarioViejo, req.body.usuarioNuevo)
+  .then(usuario => {
+    res.status(200).json(usuario.get({plain: true}))
+  })
+  .catch(error => {
+    res.status(500).json(error)
+  })
+})
 module.exports = router

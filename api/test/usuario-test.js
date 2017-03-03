@@ -17,6 +17,8 @@ test.beforeEach(async (t) => {
 test.after(async t => {
   const db = new Database()
   await db.borrarTablas()
+  .then(x => console.log(x))
+  .catch(x => console.log(x))
 })
 
 test('POST /api/usuario/tipousuario/guardar', async t => {
@@ -137,4 +139,69 @@ test('GET /api/usuario/buscarusuarios', async t => {
   t.is(respuesta.statusCode, 200)
   t.is(typeof respuesta.body, 'object', 'Deberia ser un arreglo')
   t.true(respuesta.body.length > 0)
+})
+
+test('PUT /api/usuario/deshabilitar', async t => {
+  const url = t.context.url
+  const administrador = fixtures.getTiposUsuario().administrador
+  const usuario = fixtures.getUsuario()
+
+  usuario.tipoUsuarioId = administrador.tipoUsuarioId
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/usuario/tipousuario/guardar`,
+    body: {tipoUsuario: administrador},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  options.uri = `${url}/api/usuario/crear`
+  options.body = {usuario}
+  await request(options)
+
+  options.method = 'PUT'
+  options.body = {usuario}
+  options.uri = `${url}/api/usuario/deshabilitar`
+
+  let resultado = await request(options)
+
+  t.is(resultado.body.usuarioId, usuario.usuarioId)
+  t.is(resultado.body.nombre, usuario.nombre)
+  t.is(resultado.body.usuario, usuario.usuario)
+  t.is(resultado.body.contrasena, usuario.contrasena)
+  t.is(resultado.body.estado, 'E')
+})
+
+test('PUT /api/usuario/modificar', async t => {
+  const url = t.context.url
+  const administrador = fixtures.getTiposUsuario().administrador
+  const usuario = fixtures.getUsuario()
+
+  usuario.tipoUsuarioId = administrador.tipoUsuarioId
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/usuario/tipousuario/guardar`,
+    body: {tipoUsuario: administrador},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  options.uri = `${url}/api/usuario/crear`
+  options.body = {usuario}
+  await request(options)
+
+  options.method = 'PUT'
+  options.body = {usuarioViejo: usuario, usuarioNuevo: {nombre: 'Foo-912', usuario: 'Foo-user'}}
+  options.uri = `${url}/api/usuario/modificar`
+
+  let respuesta = await request(options)
+
+  t.is(respuesta.statusCode, 200)
+  t.is(respuesta.body.usuarioId, usuario.usuarioId)
+  t.is(respuesta.body.nombre, 'Foo-912')
+  t.is(respuesta.body.usuario, 'Foo-user')
 })
