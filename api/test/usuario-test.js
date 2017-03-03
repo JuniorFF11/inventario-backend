@@ -106,3 +106,35 @@ test('GET /api/usuario/buscar', async t => {
   t.is(respuesta.statusCode, 200)
   t.deepEqual(usuario, respuesta.body)
 })
+
+test('GET /api/usuario/buscarusuarios', async t => {
+  const url = t.context.url
+
+  const administrador = fixtures.getTiposUsuario().administrador
+  const usuarios = fixtures.getUsuarios()
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/usuario/tipousuario/guardar`,
+    body: {tipoUsuario: administrador},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  for (let usuario of usuarios) {
+    usuario.tipoUsuarioId = administrador.tipoUsuarioId
+    options.uri = `${url}/api/usuario/crear`
+    options.body = {usuario}
+    await request(options)
+  }
+
+  options.method = 'GET'
+  options.uri = `${url}/api/usuario/buscarusuarios`
+  delete options.body
+
+  let respuesta = await request(options)
+  t.is(respuesta.statusCode, 200)
+  t.is(typeof respuesta.body, 'object', 'Deberia ser un arreglo')
+  t.true(respuesta.body.length > 0)
+})

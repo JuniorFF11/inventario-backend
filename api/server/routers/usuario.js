@@ -24,4 +24,13 @@ router.get('/buscar', (req, res) => {
   .catch(error => res.status(500).json(error))
 })
 
+router.get('/buscarusuarios', (req, res) => {
+  db.buscarUsuarios(req.query.usuarios || undefined)
+  .then(u => res.status(200).json(u))
+  .catch(error => {
+    console.log(error)
+    res.status(500).json(error)
+  })
+})
+
 module.exports = router
