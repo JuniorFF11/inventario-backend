@@ -17,8 +17,6 @@ test.beforeEach(async (t) => {
 test.after(async t => {
   const db = new Database()
   await db.borrarTablas()
-  .then(x => console.log(x))
-  .catch(x => console.log(x))
 })
 
 test('POST /api/usuario/tipousuario/guardar', async t => {

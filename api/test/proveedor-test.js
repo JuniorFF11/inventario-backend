@@ -17,8 +17,6 @@ test.beforeEach(async (t) => {
 test.after(async t => {
   const db = new Database()
   await db.borrarTablas()
-  .then(x => console.log(x))
-  .catch(x => console.log(x))
 })
 
 test('POST /api/proveedor/crear', async t => {
@@ -41,4 +39,83 @@ test('POST /api/proveedor/crear', async t => {
   t.is(respuesta.body.estado, 'A')
   delete respuesta.body.estado
   t.deepEqual(proveedor, respuesta.body)
+})
+
+test('GET /api/proveedor/buscar', async t => {
+  const url = t.context.url
+  const proveedor = fixtures.getProveedor()
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/proveedor/crear`,
+    body: {proveedor},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  options = {
+    method: 'GET',
+    uri: `${url}/api/proveedor/buscar`,
+    qs: {proveedor},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  let respuesta = await request(options)
+
+  delete respuesta.body.createdAt
+  delete respuesta.body.updatedAt
+  delete respuesta.body.estado
+  t.is(respuesta.statusCode, 200)
+  t.deepEqual(proveedor, respuesta.body)
+})
+
+test('PUT /api/proveedor/deshabilitar', async t => {
+  const url = t.context.url
+  const proveedor = fixtures.getProveedor()
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/proveedor/crear`,
+    body: {proveedor},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  options.method = 'PUT'
+  options.uri = `${url}/api/proveedor/deshabilitar`
+  options.body = {proveedor}
+
+  let resultado = await request(options)
+  t.is(resultado.body.proveedorId, proveedor.proveedorId)
+  t.is(resultado.body.estado, 'E')
+  t.is(resultado.body.contacto, proveedor.contacto)
+  t.is(resultado.body.nombre, proveedor.nombre)
+})
+
+test('PUT /api/proveedor/modificar', async t => {
+  const url = t.context.url
+  const proveedor = fixtures.getProveedor()
+
+  let options = {
+    method: 'POST',
+    uri: `${url}/api/proveedor/crear`,
+    body: {proveedor},
+    json: true,
+    resolveWithFullResponse: true
+  }
+  await request(options)
+
+  options.method = 'PUT'
+  options.uri = `${url}/api/proveedor/modificar`
+  options.body = {proveedorViejo: proveedor, proveedorNuevo: {nombre: 'Foo', contacto: 'bar', telefono: 'xxx-xxx-xxxx'}}
+
+  let resultado = await request(options)
+
+  t.is(resultado.body.proveedorId, proveedor.proveedorId)
+  t.is(resultado.body.contacto, 'bar')
+  t.is(resultado.body.nombre, 'Foo')
+  t.is(resultado.body.telefono, 'xxx-xxx-xxxx')
+  t.is(resultado.body.direccion, proveedor.direccion)
 })
