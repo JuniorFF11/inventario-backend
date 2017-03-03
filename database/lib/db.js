@@ -329,6 +329,15 @@ class Database {
   actualizarInventario (articulo, propiedades) {
     let proceso = co.wrap(function* () {
       try {
+        if (!articulo) {
+          articulo = {}
+          articulo.costo = propiedades.costo
+          articulo.precio = propiedades.precio
+          articulo.cantidad = propiedades.cantidad
+          articulo.id = articulo.articuloId || propiedades.articuloId
+          articuloInventario = yield models.Inventario.create(articulo)
+          return Promise.resolve(articuloInventario)
+        }
         let articuloInventario = yield models.Inventario.findOne({where: articulo})
         if (!articuloInventario) {
           articulo.costo = propiedades.costo

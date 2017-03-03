@@ -406,5 +406,6 @@ test('Deshabilitar Inventario', async t => {
   let resultado = await db.deshabilitarInventario({inventarioId: inventario.inventarioId})
 
   t.deepEqual(inventario.inventarioId, resultado.inventarioId)
+  t.deepEqual(inventario.articuloId, resultado.articuloId)
   t.deepEqual('E', resultado.estado)
 })

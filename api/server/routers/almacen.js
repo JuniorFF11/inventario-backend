@@ -29,18 +29,18 @@ router.put('/deshabilitar', (req, res) => {
 })
 
 router.put('/modificar', (req, res) => {
-  db.modificarProveedor(req.body.proveedorViejo, req.body.proveedorNuevo)
-  .then(proveedor => {
-    res.status(200).json(proveedor.get({plain: true}))
+  db.modificarAlmacen(req.body.almacenViejo, req.body.almacenNuevo)
+  .then(almacen => {
+    res.status(200).json(almacen.get({plain: true}))
   })
   .catch(error => {
     res.status(500).json(error)
   })
 })
 
-router.get('/buscarproveedores', (req, res) => {
-  db.buscarProveedores(req.query.proveedores || undefined)
-  .then(u => res.status(200).json(u))
+router.get('/buscaralmacenes', (req, res) => {
+  db.buscarAlmacenes(req.query.almacenes)
+  .then(almacenes => res.status(200).json(almacenes))
   .catch(error => {
     console.log(error)
     res.status(500).json(error)
