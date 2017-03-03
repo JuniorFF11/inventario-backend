@@ -4,7 +4,7 @@
   "description": "Modulo base de datos gestion-mercancia.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint && ava",
+    "test": "npm lint & ava",
     "lint": "standard"
   },
   "standard": {
