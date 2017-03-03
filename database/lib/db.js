@@ -345,6 +345,21 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+
+  deshabilitarInventario (inventario) {
+    if (!inventario) throw new Error('Se necesita un inventario a deshabilitar')
+    let proceso = co.wrap(function* () {
+      try {
+        let resultado = yield models.Inventario.findOne({where: inventario})
+        if (!resultado) throw new Error('El inventario no fue encontrado')
+        resultado.update({estado: 'E'})
+        return Promise.resolve(resultado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database

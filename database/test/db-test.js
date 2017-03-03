@@ -385,3 +385,26 @@ test('Agregar inventario', async t => {
   t.deepEqual(resultado.precio, 150)
   t.deepEqual(resultado.cantidad, 1)
 })
+
+test('Deshabilitar Inventario', async t => {
+  const db = new Database()
+  t.is(typeof db.deshabilitarInventario, 'function', 'Deberia ser una funcion')
+
+  let articulo = fixtures.getArticulo()
+  let proveedor = fixtures.getProveedor()
+  let almacen = fixtures.getAlmacen()
+
+  articulo.proveedorId = proveedor.proveedorId
+  articulo.almacenId = almacen.almacenId
+
+  await db.crearProveedor(proveedor)
+  await db.crearAlmacen(almacen)
+  await db.guardarArticulo(articulo)
+
+  let inventario = await db.actualizarInventario({articuloId: articulo.articuloId}, {cantidad: 1, costo: 100, precio: 150})
+
+  let resultado = await db.deshabilitarInventario({inventarioId: inventario.inventarioId})
+
+  t.deepEqual(inventario.inventarioId, resultado.inventarioId)
+  t.deepEqual('E', resultado.estado)
+})

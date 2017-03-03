@@ -4,12 +4,13 @@
   "description": "Modulo base de datos gestion-mercancia.",
   "main": "index.js",
   "scripts": {
-    "test": "npm lint & ava",
+    "test": "npm run lint && ava",
     "lint": "standard"
   },
   "standard": {
     "ignore": [
-      "./node_modules"
+      "./node_modules",
+      "app"
     ]
   },
   "author": "",
