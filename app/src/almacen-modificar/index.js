@@ -1,0 +1,13 @@
+const page = require('page')
+const autorizacion = require('../utils/autorizacion')
+const loader = require('../loader')
+const {menu, navbar} = require('../navbar')
+const template = require('./template')
+const empty = require('empty-element')
+const yo = require('yo-yo')
+const {buscarAlmacenes} = require('./utils')
+page('/almacen/modificar', autorizacion(3), loader, menu, navbar, buscarAlmacenes, (ctx, next) => {
+  let container = document.getElementById('main-container')
+  empty(container).appendChild(template(ctx.params.almacenes))
+  container.appendChild(yo`<div class="container" id="almacen-info"></div>`)
+})

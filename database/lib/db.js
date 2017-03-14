@@ -26,6 +26,18 @@ class Database {
     })
     return Promise.resolve(tarea())
   }
+  buscarTipoUsuario () {
+    let proceso = co.wrap(function* () {
+      try {
+        let tipoUsuarios = yield models.TipoUsuario.findAll()
+        return Promise.resolve(tipoUsuarios)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+
+    return Promise.resolve(proceso())
+  }
 
   borrarTablas () {
     let tarea = co.wrap(function* () {
@@ -363,6 +375,49 @@ class Database {
         if (!resultado) throw new Error('El inventario no fue encontrado')
         resultado.update({estado: 'E'})
         return Promise.resolve(resultado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  crearMenu (menu) {
+    let proceso = co.wrap(function* () {
+      try {
+        let usuarioGuardado = yield models.Menu.create(menu)
+        return Promise.resolve(usuarioGuardado)
+      } catch (e) {
+        return Promise.reject({error: 'El menu no ha podido ser creado'})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  buscarMenues (condicion) {
+    condicion = condicion || {}
+
+    let proceso = co.wrap(function* () {
+      try {
+        let menues = yield models.Menu.findAll({where: condicion})
+        if (!menues) throw new Error('No se encontraron menues')
+        return Promise.resolve(menues)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+
+    return Promise.resolve(proceso())
+  }
+
+  modificarMenu (menu, nuevo) {
+    let proceso = co.wrap(function* () {
+      try {
+        if (!menu || !nuevo) throw new Error('No se ha podido modificar el articulo')
+        let opcion = yield models.Menu.findOne({where: menu})
+        if (!opcion) throw new Error('El menu no pudo ser encontrado')
+        yield opcion.update(nuevo)
+        return Promise.resolve(opcion)
       } catch (e) {
         return Promise.reject({error: e.toString()})
       }

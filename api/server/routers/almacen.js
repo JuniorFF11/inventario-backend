@@ -9,7 +9,9 @@ router.post('/crear', (req, res) => {
     res.status(201)
     .json(almacen.get({plain: true}))
   })
-  .catch(e => res.status(500).json(e))
+  .catch(e => {
+    res.status(500).json(e)
+  })
 })
 
 router.get('/buscar', (req, res) => {

@@ -1,0 +1,13 @@
+const page = require('page')
+const autorizacion = require('../utils/autorizacion')
+const loader = require('../loader')
+const {menu, navbar} = require('../navbar')
+const template = require('./template')
+const empty = require('empty-element')
+const {tipoUsuario, usuarios} = require('./utils')
+const yo = require('yo-yo')
+page('/usuario/modificar', autorizacion(4), loader, menu, navbar, tipoUsuario, usuarios, (ctx, next) => {
+  let container = document.getElementById('main-container')
+  empty(container).appendChild(template(ctx.params.usuarios, ctx.params.tipoUsuario))
+  container.appendChild(yo`<div class="container" id="usuario-info"></div>`)
+})

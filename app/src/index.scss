@@ -1,0 +1,33 @@
+@import './assets/loader.css';
+@import './assets/sweetalert.css';
+@import './assets/bootstrap-3.3.7-dist/css/bootstrap.css';
+
+
+.login-box {
+	margin-top:7em;
+}
+
+.login-box .login-logo {
+	margin-left: 3em;
+}
+
+// .navbar-inverse ul.dropdown-menu li {
+// 	background-color: #333;
+// 	color:#fff;
+//     border-bottom: 1px solid #fff;
+// }
+
+// .navbar-inverse ul.dropdown-menu {
+// 	background-color: #333;
+// }
+
+.ver-almacen-titulo {
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	margin-bottom:2em;
+}
+
+#almacen-info div.radio {
+	display:inline;
+}

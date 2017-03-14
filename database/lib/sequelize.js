@@ -11,6 +11,7 @@ let TipoMovimiento = sequelize.import(path.join(__dirname, '/../models/tipoMovim
 let Log = sequelize.import(path.join(__dirname, '/../models/log'))
 let Inventario = sequelize.import(path.join(__dirname, '/../models/inventario'))
 let Articulo = sequelize.import(path.join(__dirname, '/../models/articulo'))
+let Menu = sequelize.import(path.join(__dirname, '/../models/menu'))
 
 Usuario.belongsTo(TipoUsuario, {foreignKey: {name: 'tipoUsuarioId', allowNull: false}})
 Log.belongsTo(TipoMovimiento, {foreignKey: {name: 'tipoMovimientoId', allowNull: false}})
@@ -21,7 +22,6 @@ Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}
 Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
 Articulo.hasMany(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
 Inventario.belongsToMany(Articulo, {through: 'inventario`', foreignKey: {name: 'articuloId', allowNull: false}})
-
 module.exports = {
   sequelize,
   models: {
@@ -32,7 +32,8 @@ module.exports = {
     TipoMovimiento,
     Log,
     Inventario,
-    Articulo
+    Articulo,
+    Menu
   }
 }
 

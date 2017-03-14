@@ -1,0 +1,11 @@
+const page = require('page')
+const autorizacion = require('../utils/autorizacion')
+const loader = require('../loader')
+const {menu, navbar} = require('../navbar')
+const {buscarProveedores} = require('./utils')
+const template = require('./template')
+const empty = require('empty-element')
+page('/proveedor/ver', autorizacion(2), loader, menu, navbar, buscarProveedores, (ctx, next) => {
+  let container = document.getElementById('main-container')
+  empty(container).appendChild(template(ctx.params.proveedores))
+})
