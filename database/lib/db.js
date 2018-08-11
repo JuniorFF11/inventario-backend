@@ -4,7 +4,7 @@ const co = require('co')
 class Database {
   setup (options) {
     options = options || {}
-    let tarea = co.wrap(function* () {
+    let tarea = co.wrap(function * () {
       try {
         yield sequelize.sync(options)
         return Promise.resolve('tablas creadas correctamente')
@@ -16,7 +16,7 @@ class Database {
   }
 
   guardarTipoUsuario (tipoUsuario) {
-    let tarea = co.wrap(function* () {
+    let tarea = co.wrap(function * () {
       try {
         let tipoUsuarioGuardado = yield models.TipoUsuario.create(tipoUsuario)
         return Promise.resolve(tipoUsuarioGuardado)
@@ -27,7 +27,7 @@ class Database {
     return Promise.resolve(tarea())
   }
   buscarTipoUsuario () {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let tipoUsuarios = yield models.TipoUsuario.findAll()
         return Promise.resolve(tipoUsuarios)
@@ -40,7 +40,7 @@ class Database {
   }
 
   borrarTablas () {
-    let tarea = co.wrap(function* () {
+    let tarea = co.wrap(function * () {
       try {
         yield sequelize.drop()
         return Promise.resolve('Tablas borradas correctamente.')
@@ -53,7 +53,7 @@ class Database {
   }
 
   crearUsuario (usuario) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let usuarioGuardado = yield models.Usuario.create(usuario)
         return Promise.resolve(usuarioGuardado)
@@ -65,9 +65,12 @@ class Database {
   }
 
   buscarUsuario (usuario) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       usuario = usuario || {}
       try {
+        if (typeof usuario == 'string') JSON.parse(usuario)
+        console.log(typeof usuario)
+
         let usuarioEncontrado = yield models.Usuario.findOne({where: usuario, include: [{model: models.TipoUsuario}]})
         if (!usuarioEncontrado) throw new Error('Usuario no encontrado')
         delete usuarioEncontrado.contrasena
@@ -83,7 +86,7 @@ class Database {
   buscarUsuarios (condicion) {
     condicion = condicion || {}
 
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let usuarios = yield models.Usuario.findAll({where: condicion, include: [{model: models.TipoUsuario}]})
         if (!usuarios) throw new Error('No se encontraron usuarios')
@@ -98,7 +101,7 @@ class Database {
 
   deshabilitarUsuario (usuario) {
     if (!usuario || usuario === {}) throw new Error('Necesita un usuario para desahabilitar')
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let encontrado = yield models.Usuario.find({where: usuario})
         yield encontrado.update({estado: 'E'})
@@ -111,7 +114,7 @@ class Database {
   }
 
   modificarUsuario (usuarioViejo, usuarioNuevo) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let usuario = yield models.Usuario.find({where: usuarioViejo})
         if (!usuario) throw new Error('Usuario no encontrado')
@@ -128,7 +131,7 @@ class Database {
   }
 
   crearProveedor (proveedor) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let proveedorGuardado = yield models.Proveedor.create(proveedor)
         if (!proveedorGuardado) throw new Error('El proveedor no ha podido ser guardado.')
@@ -142,7 +145,7 @@ class Database {
 
   buscarProveedor (proveedor) {
     if (!proveedor) throw new Error('debe Especificar algun dato del proveedor')
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let encontrado = models.Proveedor.findOne({where: proveedor})
         if (!encontrado) throw new Error('El proveedor no fue encontrado.')
@@ -157,7 +160,7 @@ class Database {
   deshabilitarProveedor (proveedor) {
     if (!proveedor || proveedor === {}) throw new Error('Debe definir proveedor a desahabilitar')
     const buscarProveedor = this.buscarProveedor
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let resultado = yield buscarProveedor(proveedor)
         if (!resultado) throw new Error('El proveedor no fue encontrado.')
@@ -172,7 +175,7 @@ class Database {
   modificarProveedor (proveedorViejo, proveedorNuevo) {
     if (!proveedorViejo || proveedorViejo === {}) throw new Error('Debe definir proveedor a desahabilitar')
     const buscarProveedor = this.buscarProveedor
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let resultado = yield buscarProveedor(proveedorViejo)
         if (!resultado) throw new Error('El proveedor no fue encontrado.')
@@ -187,7 +190,7 @@ class Database {
 
   buscarProveedores (condicion) {
     condicion = condicion || {}
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let proveedores = yield models.Proveedor.findAll({where: condicion})
         if (!proveedores) throw new Error('No se encontraron proveedores.')
@@ -201,7 +204,7 @@ class Database {
 
   crearAlmacen (almacen) {
     if (!almacen) throw new Error('Se necesita un almacen para ser guardado.')
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let almacenGuardado = yield models.Almacen.create(almacen)
         if (!almacenGuardado) throw new Error('El almacen no ha podido ser guardado.')
@@ -212,11 +215,24 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
-
+  crearInventario (inventario) {
+    if (!inventario) throw new Error('Se necesita un inventario para ser guardado.')
+    let proceso = co.wrap(function * () {
+      try {
+        let inventarioGuardado = yield models.Inventario.create(inventario)
+        if (!inventarioGuardado) throw new Error('El inventario no ha podido ser guardado.')
+        return Promise.resolve(inventarioGuardado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
   buscarAlmacen (almacen) {
     if (!almacen) throw new Error('Debe especificar el almacen')
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
+        if (typeof almacen != 'object') almacen = JSON.parse(almacen)
         let encontrado = models.Almacen.findOne({where: almacen})
         if (!encontrado) throw new Error('El Almacen no fue encontrado.')
         return Promise.resolve(encontrado)
@@ -226,11 +242,24 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
-
+  buscarInventario (inventario) {
+    if (!inventario) throw new Error('Debe especificar el inventario')
+    let proceso = co.wrap(function * () {
+      try {
+        if (typeof inventario != 'object') inventario = JSON.parse(inventario)
+        let encontrado = models.Inventario.findOne({where: inventario})
+        if (!encontrado) throw new Error('El inventario no fue encontrado.')
+        return Promise.resolve(encontrado)
+      } catch (e) {
+        Promise.reject(e.toString())
+      }
+    })
+    return Promise.resolve(proceso())
+  }
   deshabilitarAlmacen (almacen) {
     if (!almacen || almacen === {}) throw new Error('Debe definir almacen a desahabilitar')
     const buscarAlmacen = this.buscarAlmacen
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let resultado = yield buscarAlmacen(almacen)
         if (!resultado) throw new Error('El almacen no fue encontrado.')
@@ -245,8 +274,9 @@ class Database {
 
   modificarAlmacen (almacenViejo, almacenNuevo) {
     let buscarAlmacen = this.buscarAlmacen
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
+        console.log(almacenViejo, almacenNuevo)
         if (!almacenViejo || !almacenNuevo) throw new Error('No se ha podido modificar el almacen, datos incompletos.')
         let almacen = yield buscarAlmacen(almacenViejo)
         if (!almacen) throw new Error('No se ha encontrado este almacen.')
@@ -258,10 +288,25 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
-
+  modificarInventario (inventarioViejo, inventarioNuevo) {
+    let buscarInventario = this.buscarInventario
+    let proceso = co.wrap(function * () {
+      try {
+        console.log(inventarioViejo, inventarioNuevo)
+        if (!inventarioViejo || !inventarioNuevo) throw new Error('No se ha podido modificar el inventario, datos incompletos.')
+        let inventario = yield buscarInventario(inventarioViejo)
+        if (!inventario) throw new Error('No se ha encontrado este almacen.')
+        yield inventario.update(inventarioNuevo)
+        return Promise.resolve(inventario)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
   buscarAlmacenes (condicion) {
     condicion = condicion || {}
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let almacenes = yield models.Almacen.findAll({where: condicion})
         if (!almacenes) throw new Error('No se encontraron almacenes')
@@ -273,8 +318,21 @@ class Database {
     return Promise.resolve(proceso())
   }
 
+  buscarInventarios (condicion) {
+    condicion = condicion || {}
+    let proceso = co.wrap(function * () {
+      try {
+        let inventarios = yield models.Inventario.findAll({where: condicion})
+        if (!inventarios) throw new Error('No se encontraron inventarios')
+        return Promise.resolve(inventarios)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
   guardarArticulo (articulo) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let guardado = yield models.Articulo.create(articulo)
         if (!guardado) throw new Error('El articulo no pudo ser guardado.')
@@ -286,19 +344,19 @@ class Database {
     return Promise.resolve(proceso())
   }
   buscarArticulo (articulo) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let articuloEncontrado = yield models.Articulo
-        .findOne({
-          where: articulo,
-          include: [
-            {
-              model: models.Proveedor
-            },
-            {
-              model: models.Almacen
-            }
-          ]})
+          .findOne({
+            where: articulo,
+            include: [
+              {
+                model: models.Proveedor
+              },
+              {
+                model: models.Almacen
+              }
+            ]})
         if (!articuloEncontrado) throw new Error('El articulo no ha sido encontrado.')
         return Promise.resolve(articuloEncontrado)
       } catch (e) {
@@ -310,7 +368,7 @@ class Database {
 
   buscarArticulos (condicion) {
     condicion = condicion || {}
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let articulos = yield models.Articulo.findAll({where: condicion})
         if (!articulos) throw new Error('No se encontraron articulos.')
@@ -324,7 +382,7 @@ class Database {
 
   modificarArticulo (articuloViejo, articuloNuevo) {
     let buscarArticulo = this.buscarArticulo
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         if (!articuloViejo || !articuloNuevo) throw new Error('No se ha podido modificar el articulo')
         let articulo = yield buscarArticulo(articuloViejo)
@@ -339,7 +397,7 @@ class Database {
   }
 
   actualizarInventario (articulo, propiedades) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         if (!articulo) {
           articulo = {}
@@ -369,7 +427,7 @@ class Database {
 
   deshabilitarInventario (inventario) {
     if (!inventario) throw new Error('Se necesita un inventario a deshabilitar')
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let resultado = yield models.Inventario.findOne({where: inventario})
         if (!resultado) throw new Error('El inventario no fue encontrado')
@@ -383,7 +441,7 @@ class Database {
   }
 
   crearMenu (menu) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let usuarioGuardado = yield models.Menu.create(menu)
         return Promise.resolve(usuarioGuardado)
@@ -397,7 +455,7 @@ class Database {
   buscarMenues (condicion) {
     condicion = condicion || {}
 
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         let menues = yield models.Menu.findAll({where: condicion})
         if (!menues) throw new Error('No se encontraron menues')
@@ -411,7 +469,7 @@ class Database {
   }
 
   modificarMenu (menu, nuevo) {
-    let proceso = co.wrap(function* () {
+    let proceso = co.wrap(function * () {
       try {
         if (!menu || !nuevo) throw new Error('No se ha podido modificar el articulo')
         let opcion = yield models.Menu.findOne({where: menu})
@@ -427,4 +485,3 @@ class Database {
 }
 
 module.exports = Database
-

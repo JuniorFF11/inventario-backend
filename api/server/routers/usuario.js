@@ -30,6 +30,7 @@ router.post('/crear', (req, res) => {
 
 router.post('/buscar', (req, res) => {
   let usuario = req.body.usuario
+  console.log(usuario)
   if (typeof usuario != 'object') JSON.parse(usuario)
   db.buscarUsuario(usuario)
   .then(u => {

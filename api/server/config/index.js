@@ -1,4 +1,4 @@
-let secretKey = process.env.KEY
+let secretKey = 'mySecret'
 module.exports = {
   secretKey
 }

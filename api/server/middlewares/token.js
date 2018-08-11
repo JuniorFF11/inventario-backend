@@ -4,6 +4,7 @@ const {secretKey} = require('../config')
 function sign (payload, opts) {
   return new Promise((resolve, reject) => {
     jwt.sign(payload, secretKey, opts, (err, token) => {
+      console.log(err)
       if (err) reject(secretKey)
       resolve('Bearer ' + token)
     })

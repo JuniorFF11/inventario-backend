@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 const config = require('./config')
-const sequelize = new Sequelize(config['DB_NAME'], config['DB_USER'], config['DB_PASSWORD'])
+const sequelize = new Sequelize({database: config['DB_NAME'], username: config['DB_USER'], password: config['DB_PASSWORD'], dialect: 'mysql', timezone: 'GMT-4'})
 const path = require('path')
 
 let Usuario = sequelize.import(path.join(__dirname, '/../models/usuario'))
@@ -20,8 +20,9 @@ Almacen.hasMany(Articulo, {foreignKey: {name: 'almacenId', allowNull: false}})
 Articulo.belongsTo(Almacen, {foreignKey: {name: 'almacenId', allowNull: false}})
 Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}})
 Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
-Articulo.hasMany(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
-Inventario.belongsToMany(Articulo, {through: 'inventario`', foreignKey: {name: 'articuloId', allowNull: false}})
+Articulo.belongsTo(Inventario, {foreignKey: {name: 'inventarioId', allowNull: false}})
+// Articulo.hasMany(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})
+// Inventario.belongsToMany(Articulo, {through: 'inventario`', foreignKey: {name: 'articuloId', allowNull: false}})
 module.exports = {
   sequelize,
   models: {
@@ -36,4 +37,3 @@ module.exports = {
     Menu
   }
 }
-

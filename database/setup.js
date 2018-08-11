@@ -3,32 +3,32 @@ const {models} = require('./lib/sequelize')
 const co = require('co')
 let db = new Database()
 
-co(function* () {
+co(function * () {
   yield db.setup()
 
   let administrador = yield db
-  .guardarTipoUsuario({
-    descripcion: 'Encargado Tecnologia',
-    nivelUsuario: 4
-  })
+    .guardarTipoUsuario({
+      descripcion: 'Encargado Tecnologia',
+      nivelUsuario: 4
+    })
 
   yield db
-  .guardarTipoUsuario({
-    descripcion: 'Gerente de Logistica',
-    nivelUsuario: 3
-  })
+    .guardarTipoUsuario({
+      descripcion: 'Gerente de Logistica',
+      nivelUsuario: 3
+    })
 
   yield db
-  .guardarTipoUsuario({
-    descripcion: 'Encargado de Almacen',
-    nivelUsuario: 2
-  })
+    .guardarTipoUsuario({
+      descripcion: 'Encargado de Almacen',
+      nivelUsuario: 2
+    })
 
   yield db
-  .guardarTipoUsuario({
-    descripcion: 'Auxiliar Almacen',
-    nivelUsuario: 1
-  })
+    .guardarTipoUsuario({
+      descripcion: 'Auxiliar Almacen',
+      nivelUsuario: 1
+    })
   yield db.crearUsuario({
     nombre: 'Emry',
     usuario: 'emry',
@@ -178,4 +178,3 @@ co(function* () {
   })
   console.log('Setup Finalizado.')
 })
-
