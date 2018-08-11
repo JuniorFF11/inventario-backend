@@ -12,8 +12,8 @@ router.post('/guardar', (req, res) => {
   .catch(e => res.status(500).json(e))
 })
 
-router.get('/buscar', (req, res) => {
-  db.buscarArticulo(req.query.articulo)
+router.get('/buscar/:articulo', (req, res) => {
+  db.buscarArticulo({articuloId: req.params.articulo})
   .then(articulo => res.status(200).json(articulo.get({plain: true})))
   .catch(error => res.status(500).json(error))
 })
