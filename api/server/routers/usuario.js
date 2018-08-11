@@ -28,8 +28,10 @@ router.post('/crear', (req, res) => {
   })
 })
 
-router.get('/buscar', (req, res) => {
-  db.buscarUsuario(req.query.usuario)
+router.post('/buscar', (req, res) => {
+  let usuario = req.body.usuario
+  if (typeof usuario != 'object') JSON.parse(usuario)
+  db.buscarUsuario(usuario)
   .then(u => {
     let usuario = u.get({plain: true})
     delete usuario.contrasena

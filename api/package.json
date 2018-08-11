@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.0",
+    "cors": "^2.8.4",
     "express": "^4.15.0",
     "express-bearer-token": "^2.1.0",
     "jsonwebtoken": "^7.3.0",
