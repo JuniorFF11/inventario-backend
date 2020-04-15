@@ -9,7 +9,10 @@ router.post('/guardar', (req, res) => {
     res.status(201)
     .json(articulo.get({plain: true}))
   })
-  .catch(e => res.status(500).json(e))
+  .catch(e => {
+    console.log(e)
+    res.status(500).json(e)
+  })
 })
 
 router.get('/buscar/:articulo', (req, res) => {

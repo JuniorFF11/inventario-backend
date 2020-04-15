@@ -21,6 +21,7 @@ class Database {
         let tipoUsuarioGuardado = yield models.TipoUsuario.create(tipoUsuario)
         return Promise.resolve(tipoUsuarioGuardado)
       } catch (e) {
+        console.log(e)
         return Promise.reject({error: 'No se ha podido guardar el tipo de usuario.'})
       }
     })
@@ -58,6 +59,7 @@ class Database {
         let usuarioGuardado = yield models.Usuario.create(usuario)
         return Promise.resolve(usuarioGuardado)
       } catch (e) {
+        console.log(e)
         return Promise.reject({error: 'El usuario no ha podido ser creado'})
       }
     })
@@ -68,7 +70,7 @@ class Database {
     let proceso = co.wrap(function * () {
       usuario = usuario || {}
       try {
-        if (typeof usuario == 'string') JSON.parse(usuario)
+        if (typeof usuario === 'string') JSON.parse(usuario)
         console.log(typeof usuario)
 
         let usuarioEncontrado = yield models.Usuario.findOne({where: usuario, include: [{model: models.TipoUsuario}]})
@@ -232,7 +234,7 @@ class Database {
     if (!almacen) throw new Error('Debe especificar el almacen')
     let proceso = co.wrap(function * () {
       try {
-        if (typeof almacen != 'object') almacen = JSON.parse(almacen)
+        if (typeof almacen !== 'object') almacen = JSON.parse(almacen)
         let encontrado = models.Almacen.findOne({where: almacen})
         if (!encontrado) throw new Error('El Almacen no fue encontrado.')
         return Promise.resolve(encontrado)
@@ -246,7 +248,7 @@ class Database {
     if (!inventario) throw new Error('Debe especificar el inventario')
     let proceso = co.wrap(function * () {
       try {
-        if (typeof inventario != 'object') inventario = JSON.parse(inventario)
+        if (typeof inventario !== 'object') inventario = JSON.parse(inventario)
         let encontrado = models.Inventario.findOne({where: inventario})
         if (!encontrado) throw new Error('El inventario no fue encontrado.')
         return Promise.resolve(encontrado)
@@ -338,6 +340,7 @@ class Database {
         if (!guardado) throw new Error('El articulo no pudo ser guardado.')
         return Promise.resolve(guardado)
       } catch (e) {
+        console.log(e)
         return Promise.reject({error: e.toString()})
       }
     })
@@ -355,6 +358,9 @@ class Database {
               },
               {
                 model: models.Almacen
+              },
+              {
+                model: models.Inventario
               }
             ]})
         if (!articuloEncontrado) throw new Error('El articulo no ha sido encontrado.')
@@ -370,7 +376,19 @@ class Database {
     condicion = condicion || {}
     let proceso = co.wrap(function * () {
       try {
-        let articulos = yield models.Articulo.findAll({where: condicion})
+        let articulos = yield models.Articulo.findAll({where: condicion,
+          include: [
+            {
+              model: models.Proveedor
+            },
+            {
+              model: models.Almacen
+            },
+            {
+              model: models.Inventario
+            }
+          ]
+        })
         if (!articulos) throw new Error('No se encontraron articulos.')
         return Promise.resolve(articulos)
       } catch (e) {
@@ -476,6 +494,20 @@ class Database {
         if (!opcion) throw new Error('El menu no pudo ser encontrado')
         yield opcion.update(nuevo)
         return Promise.resolve(opcion)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+  guardarMovimiento (movimiento) {
+    if (!movimiento) throw new Error('Se necesita un movimiento para ser guardado.')
+    let proceso = co.wrap(function * () {
+      try {
+        let movimientoGuardado = yield models.TipoMovimiento.create(movimiento)
+        if (!movimientoGuardado) throw new Error('El movimiento no ha podido ser guardado.')
+        return Promise.resolve(movimientoGuardado)
       } catch (e) {
         return Promise.reject({error: e.toString()})
       }
