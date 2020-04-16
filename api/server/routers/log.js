@@ -4,7 +4,7 @@ const Database = require('../../../database')
 const db = new Database()
 
 router.post('/', (req, res) => {
-  db.guardarMovimiento(req.body.log)
+  db.crearLog(req.body.log)
   .then(() => {
     res.status(201)
     .json({response: 'Guardado'})

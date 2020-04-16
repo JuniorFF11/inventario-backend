@@ -4,6 +4,7 @@ const Database = require('../../../database')
 const db = new Database()
 
 router.post('/guardar', (req, res) => {
+  req.body.articulo.proveedorId = 'bd19bf2a-6a64-41b3-8e3d-968230d542e0'
   db.guardarArticulo(req.body.articulo)
   .then(articulo => {
     res.status(201)

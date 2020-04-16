@@ -4,8 +4,8 @@ const co = require('co')
 let db = new Database()
 
 co(function * () {
-  yield db.borrarTablas()
-  yield db.setup()
+ // yield db.borrarTablas()
+ // yield db.setup()
 
   // let administrador = yield db
   //   .guardarTipoUsuario({
@@ -177,8 +177,8 @@ co(function * () {
   //   usuarioNivel: 4,
   //   padreId: permisoMenu.menuId
   // })
-  // yield models.Log.drop()
+   yield models.Articulo.drop()
 
-  // yield models.Log.create()
+   yield models.Articulo.create()
   console.log('Setup Finalizado.')
 })

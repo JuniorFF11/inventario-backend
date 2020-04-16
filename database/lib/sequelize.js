@@ -18,7 +18,9 @@ Log.belongsTo(TipoMovimiento, {foreignKey: {name: 'tipoMovimientoId', allowNull:
 Log.belongsTo(Usuario, {foreignKey: {name: 'usuarioId', allowNull: false}})
 Almacen.hasMany(Articulo, {foreignKey: {name: 'almacenId', allowNull: false}})
 Articulo.belongsTo(Almacen, {foreignKey: {name: 'almacenId', allowNull: false}})
+
 // Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}})
+
 Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
 Articulo.belongsTo(Inventario, {foreignKey: {name: 'inventarioId', allowNull: false}})
 Articulo.hasMany(Log, {foreignKey : {name: 'articuloId', allowNull: false}})
