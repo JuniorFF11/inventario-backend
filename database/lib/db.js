@@ -514,6 +514,19 @@ class Database {
     })
     return Promise.resolve(proceso())
   }
+  
+  crearLog (log) {
+    let proceso = co.wrap(function * () {
+      try {
+        let logGuardado = yield models.Log.create(log)
+        return Promise.resolve(logGuardado)
+      } catch (e) {
+        console.log(e)
+        return Promise.reject({error: 'El log no ha podido ser creado'})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
 }
 
 module.exports = Database
