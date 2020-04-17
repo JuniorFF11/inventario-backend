@@ -2,7 +2,10 @@ const express = require('express')
 const router = express.Router()
 const Database = require('../../../database')
 const db = new Database()
+<<<<<<< HEAD
 const axios = require('axios')
+=======
+>>>>>>> 946fccef92ec5436a8a72f851d6205207a8dc6a4
 
 router.post('/', (req, res) => {
   db.crearLog(req.body.log)
@@ -14,6 +17,7 @@ router.post('/', (req, res) => {
     res.status(500)
     .json(e)
   })
+<<<<<<< HEAD
 })
 
 router.get('/', (req, res) => {
@@ -54,3 +58,18 @@ router.post('/accountingEntry',  (req, res) => {
 })
 module.exports = router
 
+=======
+  // db.guardarMovimiento(req.body.)
+  // .then(articulo => {
+  //   res.status(201)
+  //   .json(articulo.get({plain: true}))
+  // })
+  // .catch(e => {
+  //   console.log(e)
+  //   res.status(500).json(e)
+  // })
+})
+
+
+module.exports = router
+>>>>>>> 946fccef92ec5436a8a72f851d6205207a8dc6a4

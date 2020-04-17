@@ -183,7 +183,7 @@ class Database {
         if (!resultado) throw new Error('El proveedor no fue encontrado.')
         resultado.update(proveedorNuevo)
         return Promise.resolve(resultado)
-      } catch (e) {
+      :} catch (e) {
         return Promise.reject({error: e.toString()})
       }
     })
@@ -509,7 +509,9 @@ class Database {
     return Promise.resolve(proceso())
   }
 
-crearLog (log) {
+  
+  crearLog (log) {
+
     let proceso = co.wrap(function * () {
       try {
         let logGuardado = yield models.Log.create(log)
@@ -521,6 +523,7 @@ crearLog (log) {
     })
     return Promise.resolve(proceso())
   }
+
 buscarLogs (condicion) {
     condicion = condicion || {}
     let proceso = co.wrap(function * () {
@@ -564,6 +567,7 @@ modificarLog (logViejo, logNuevo) {
     })
     return Promise.resolve(proceso())
   }
+
 }
 
 module.exports = Database
