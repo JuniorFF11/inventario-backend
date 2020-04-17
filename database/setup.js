@@ -4,8 +4,8 @@ const co = require('co')
 let db = new Database()
 
 co(function * () {
- // yield db.borrarTablas()
- // yield db.setup()
+  yield db.borrarTablas()
+  yield db.setup()
 
   // let administrador = yield db
   //   .guardarTipoUsuario({
@@ -13,11 +13,11 @@ co(function * () {
   //     nivelUsuario: 4
   //   })
 
-  // yield db
-  //   .guardarTipoUsuario({
-  //     descripcion: 'Gerente de Logistica',
-  //     nivelUsuario: 3
-  //   })
+  let administrador =  yield db
+     .guardarTipoUsuario({
+       descripcion: 'Administrador',
+       nivelUsuario: 9
+     })
 
   // yield db
   //   .guardarTipoUsuario({
@@ -30,13 +30,21 @@ co(function * () {
   //     descripcion: 'Auxiliar Almacen',
   //     nivelUsuario: 1
   //   })
-  // yield db.crearUsuario({
-  //   nombre: 'Emry',
-  //   usuario: 'emry',
-  //   apellido: 'Rosario',
-  //   contrasena: 'test123',
-  //   tipoUsuarioId: administrador.tipoUsuarioId
-  // })
+   yield db.crearUsuario({
+     nombre: 'Emry',
+     usuario: 'e.rosario',
+     apellido: 'Rosario',
+     contrasena: '123456e',
+     tipoUsuarioId: administrador.tipoUsuarioId
+   })
+
+yield db.crearUsuario({
+     nombre: 'Juan Pablo',
+     usuario: 'j.valdez',
+     apellido: 'Valdez',
+     contrasena: 'Juan Pablo',
+     tipoUsuarioId: administrador.tipoUsuarioId
+   })
 
   // let usuarioMenu = yield models.Menu.create({
   //   descripcion: 'Usuarios',
@@ -177,8 +185,8 @@ co(function * () {
   //   usuarioNivel: 4,
   //   padreId: permisoMenu.menuId
   // })
-   yield models.Articulo.drop()
+   //yield models.Log.drop({force: true})
 
-   yield models.Articulo.create()
+   //yield models.Log.create()
   console.log('Setup Finalizado.')
 })

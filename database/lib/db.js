@@ -354,9 +354,6 @@ class Database {
             where: articulo,
             include: [
               {
-                model: models.Proveedor
-              },
-              {
                 model: models.Almacen
               },
               {
@@ -378,9 +375,6 @@ class Database {
       try {
         let articulos = yield models.Articulo.findAll({where: condicion,
           include: [
-            {
-              model: models.Proveedor
-            },
             {
               model: models.Almacen
             },
@@ -508,6 +502,62 @@ class Database {
         let movimientoGuardado = yield models.TipoMovimiento.create(movimiento)
         if (!movimientoGuardado) throw new Error('El movimiento no ha podido ser guardado.')
         return Promise.resolve(movimientoGuardado)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+
+crearLog (log) {
+    let proceso = co.wrap(function * () {
+      try {
+        let logGuardado = yield models.Log.create(log)
+        return Promise.resolve(logGuardado)
+      } catch (e) {
+        console.log(e)
+        return Promise.reject({error: 'El log no ha podido ser creado'})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+buscarLogs (condicion) {
+    condicion = condicion || {}
+    let proceso = co.wrap(function * () {
+      try {
+        let logs = yield models.Log.findAll({where: condicion,
+          include: [
+            {
+              model: models.Articulo
+            },
+            {
+              model: models.Usuario
+            },
+            {
+              model: models.TipoMovimiento
+            }
+          ]
+        })
+        if (!logs) throw new Error('No se encontraron logs.')
+        return Promise.resolve(logs)
+      } catch (e) {
+        return Promise.reject({error: e.toString()})
+      }
+    })
+    return Promise.resolve(proceso())
+  }
+modificarLog (logViejo, logNuevo) {
+    let buscarLogs = this.buscarLogs
+    let proceso = co.wrap(function * () {
+      try {
+        console.log(logViejo, logNuevo)
+        if (!logViejo || !logNuevo) throw new Error('No se ha podido modificar el log, datos incompletos.')
+        let l = yield buscarLogs(logViejo)
+        if (!l) throw new Error('No se ha encontrado este log')
+        console.log(typeof l)
+	console.log(l)
+	yield l[0].update(logNuevo)
+        return Promise.resolve(l)
       } catch (e) {
         return Promise.reject({error: e.toString()})
       }

@@ -6,10 +6,10 @@ const db = new Database()
 router.post('/', (req, res) => {
   Promise.all([
     db.guardarMovimiento({
-      descripcion: 'Entrada'
+      descripcion: 'Credito'
     }),
     db.guardarMovimiento({
-      descripcion: 'Salida'
+      descripcion: 'Debito'
     })
   ])
   .then(() => {
