@@ -24,7 +24,7 @@ Articulo.belongsTo(Almacen, {foreignKey: {name: 'almacenId', allowNull: false}})
 // Proveedor.hasMany(Articulo, {foreignKey: {name: 'proveedorId', allowNull: false}})
 
 Articulo.belongsTo(Proveedor, {foreignKey: {name: 'proveedorId', allowNull: false}})
->>>>>>> 946fccef92ec5436a8a72f851d6205207a8dc6a4
+
 Articulo.belongsTo(Inventario, {foreignKey: {name: 'inventarioId', allowNull: false}})
 //Articulo.hasMany(Log, {foreignKey : {name: 'articuloId', allowNull: false}})
 // Articulo.hasMany(Inventario, {foreignKey: {name: 'articuloId', allowNull: false}})

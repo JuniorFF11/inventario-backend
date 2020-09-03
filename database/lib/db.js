@@ -46,6 +46,7 @@ class Database {
         yield sequelize.drop()
         return Promise.resolve('Tablas borradas correctamente.')
       } catch (e) {
+	console.log(e)
         return Promise.reject('Ha ocurrido un error al intentar borrar las tablas')
       }
     })
@@ -183,7 +184,7 @@ class Database {
         if (!resultado) throw new Error('El proveedor no fue encontrado.')
         resultado.update(proveedorNuevo)
         return Promise.resolve(resultado)
-      :} catch (e) {
+      } catch (e) {
         return Promise.reject({error: e.toString()})
       }
     })
