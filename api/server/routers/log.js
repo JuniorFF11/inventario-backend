@@ -8,7 +8,8 @@ const axios = require('axios')
 
 
 router.post('/', (req, res) => {
-  db.crearLog(req.body.log)
+  let log = req.body.log
+  db.crearLog(log)
   .then(() => {
     res.status(201)
     .json({response: 'Guardado'})

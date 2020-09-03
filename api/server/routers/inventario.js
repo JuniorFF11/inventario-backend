@@ -21,13 +21,15 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:id', (req, res) => {
-  db.buscarInventario({inventarioId: req.params.id})
+  let id = req.params.id
+  db.buscarInventario({inventarioId: id})
   .then(inventario => res.status(200).json(inventario.get({plain: true})))
   .catch(error => res.status(500).json(error))
 })
 
 router.post('/', (req, res) => {
-  db.crearInventario(req.body.inventario)
+  let inventario = req.body.inventario
+  db.crearInventario(inventario)
   .then(inventario => {
     res.status(201)
     .json(inventario.get({plain: true}))
